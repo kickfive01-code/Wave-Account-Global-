@@ -1,0 +1,89 @@
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wave Account Global</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#061225;color:white}
+header{padding:28px 16px;text-align:center;background:linear-gradient(135deg,#061225,#0759b8)}
+h1{color:#43c5ff;text-shadow:0 0 15px #008cff;margin-bottom:8px}
+main{max-width:750px;margin:24px auto;padding:16px}
+.card{background:#0c1e38;border:1px solid #1768a8;border-radius:16px;padding:20px;margin-bottom:20px;box-shadow:0 0 18px #0077ff20}
+h2{color:#61caff}
+label{display:block;margin-top:12px;margin-bottom:6px}
+input,textarea,select{width:100%;padding:12px;border-radius:8px;border:1px solid #2b75ae;background:#07152a;color:white;font-size:16px}
+button{background:#0787ff;color:white;border:0;border-radius:8px;padding:12px 18px;font-weight:bold;font-size:16px;margin-top:14px;cursor:pointer}
+button:hover{background:#31a6ff}
+.stars{font-size:28px;color:#ffd34d}
+.review{border-top:1px solid #234568;padding:12px 0}
+small{color:#b6cbe2}
+footer{text-align:center;padding:24px;color:#91aac7}
+.notice{font-size:13px;color:#b6cbe2;line-height:1.5}
+</style>
+</head>
+<body>
+<header>
+<h1>🌊 WAVE ACCOUNT GLOBAL</h1>
+<p>Community Reviews · Ratings · Trust</p>
+</header>
+<main>
+<section class="card">
+<h2>⭐ Bewerte deine Erfahrung</h2>
+<form id="reviewForm">
+<label for="username">Dein Name oder Benutzername</label>
+<input id="username" maxlength="40" required placeholder="Dein Name">
+<label for="rating">Deine Bewertung</label>
+<select id="rating" required>
+<option value="5">⭐⭐⭐⭐⭐ – 5 Sterne</option>
+<option value="4">⭐⭐⭐⭐ – 4 Sterne</option>
+<option value="3">⭐⭐⭐ – 3 Sterne</option>
+<option value="2">⭐⭐ – 2 Sterne</option>
+<option value="1">⭐ – 1 Stern</option>
+</select>
+<label for="comment">Dein Feedback</label>
+<textarea id="comment" maxlength="500" rows="4" required placeholder="Schreibe deine ehrliche Erfahrung ..."></textarea>
+<button type="submit">Bewertung veröffentlichen</button>
+</form>
+<p class="notice">Bitte keine Passwörter oder privaten Daten veröffentlichen. Schreibe nur ehrliche Bewertungen.</p>
+</section>
+<section class="card">
+<h2>🌍 Community-Bewertungen</h2>
+<p id="average">Noch keine Bewertungen auf diesem Gerät.</p>
+<div id="reviews"></div>
+</section>
+<section class="card">
+<h2>🤝 Trust & Sicherheit</h2>
+<p>Informiere dich sorgfältig und prüfe Angebote, bevor du einen Kauf tätigst. Bewertungen auf dieser Seite sind nicht unabhängig verifiziert.</p>
+</section>
+</main>
+<footer>© 2026 Wave Account Global</footer>
+<script>
+const form=document.getElementById('reviewForm');
+const list=document.getElementById('reviews');
+let reviews=[];
+try{reviews=JSON.parse(localStorage.getItem('waveReviews')||'[]')}catch(e){}
+function render(){
+list.innerHTML='';
+if(!reviews.length){document.getElementById('average').textContent='Noch keine Bewertungen auf diesem Gerät.';return;}
+const avg=reviews.reduce((s,r)=>s+r.rating,0)/reviews.length;
+document.getElementById('average').textContent='Durchschnitt: '+avg.toFixed(1)+' / 5 Sterne · '+reviews.length+' Bewertung(en)';
+reviews.slice().reverse().forEach(r=>{
+const div=document.createElement('div');div.className='review';
+const name=document.createElement('strong');name.textContent=r.name+' ';
+const stars=document.createElement('span');stars.className='stars';stars.textContent='★'.repeat(r.rating)+'☆'.repeat(5-r.rating);
+const comment=document.createElement('p');comment.textContent=r.comment;
+const date=document.createElement('small');date.textContent=r.date;
+div.append(name,stars,comment,date);list.appendChild(div);
+});
+}
+form.addEventListener('submit',e=>{
+e.preventDefault();
+reviews.push({name:document.getElementById('username').value.trim(),rating:Number(document.getElementById('rating').value),comment:document.getElementById('comment').value.trim(),date:new Date().toLocaleDateString('de-DE')});
+localStorage.setItem('waveReviews',JSON.stringify(reviews));
+form.reset();render();alert('Bewertung auf diesem Gerät gespeichert!');
+});
+render();
+</script>
+</body>
+</html>
